@@ -1,6 +1,8 @@
+using System.Collections.Immutable;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using ProbeHttps.builder;
 
 namespace ProbeHttps;
 
@@ -24,14 +26,14 @@ public class MulticastService
 
     private void SendProbeMessage(string protocol, int port)
     {
-        var probeMessage = $"PROBE {protocol} {port} \n\n";
+        var probeMessage = Builder.BuildProbe(protocol, port);
         var bytes = Encoding.ASCII.GetBytes(probeMessage);
         _udpClient.Send(bytes, bytes.Length, _multicastEndPoint);
     }
 
     public void SendDataMessage(string protocol, int port)
     {
-        var dataMessage = $"DATA {protocol} {port} \n\n";
+        var dataMessage = Builder.BuildProbe(protocol,port);
         var bytes = Encoding.ASCII.GetBytes(dataMessage);
         _udpClient.Send(bytes, bytes.Length, _multicastEndPoint);
     }
