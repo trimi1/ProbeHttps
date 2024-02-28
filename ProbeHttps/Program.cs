@@ -16,7 +16,7 @@ foreach (var service in services)
     await probe.CheckService(service.Url, service.ExpectedStatusCode, service.MaxResponseTime);
 }
 
-const string configFilePath = "/Users/quentin/Desktop/Documents/Ecole/HELMo/b2/reseau/ProbeHttps/ProbeHttps/Resource/config.json";
+const string configFilePath = @"C:\Users\matte\Documents\École\Réseaux\ProbeHttps\ProbeHttps\Resource\config.json";
 if (!File.Exists(configFilePath))
 {
     Console.WriteLine("Config file not found");
