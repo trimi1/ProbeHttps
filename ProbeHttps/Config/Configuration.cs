@@ -1,6 +1,6 @@
-namespace ProbeHttps;
+namespace ProbeHttps.Config;
 
-public record Config(
+public record Configuration(
     string Protocol,
     string MulticastAddress,
     int MulticastPort,

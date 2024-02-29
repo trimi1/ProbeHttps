@@ -2,8 +2,13 @@
   "protocol": "https",
   "multicastAddress": "224.0.0.254",
   "multicastPort": 60202,
+<<<<<<< HEAD
   "multicastInterface": "ethernet_32776",
   "multicastDelay": 900,
+=======
+  "multicastInterface": "en10",
+  "multicastDelay": 10000,
+>>>>>>> b197f30ffa71587a497af7041624c3d4ea9ea9af
   "unicastPort": 60000,
   "aesKey": ""
 }

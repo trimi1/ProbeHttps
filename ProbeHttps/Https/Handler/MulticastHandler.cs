@@ -1,23 +1,27 @@
-using System.Collections.Immutable;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using ProbeHttps.builder;
 
-namespace ProbeHttps;
+namespace ProbeHttps.Https.Handler;
 
-public class MulticastService
+public class MulticastHandler
 {
     private readonly UdpClient _udpClient;
     private readonly IPEndPoint _multicastEndPoint;
     private readonly int _unicastPort;
     private readonly Thread _thread;
     private readonly int _sleepTime;
+<<<<<<< HEAD:ProbeHttps/MulticastService.cs
     public MulticastService(string multicastAddress, int multicastPort, int unicastPort,int sleepTime)
+=======
+
+    public MulticastHandler(string multicastAddress, int multicastPort, int unicastPort, int sleepTime)
+>>>>>>> b197f30ffa71587a497af7041624c3d4ea9ea9af:ProbeHttps/Https/Handler/MulticastHandler.cs
     {
         _udpClient = new UdpClient();
         _multicastEndPoint = new IPEndPoint(IPAddress.Parse(multicastAddress), multicastPort);
         _unicastPort = unicastPort;
+        _sleepTime = sleepTime;
         _thread = new Thread(ThreadLoop);
         _sleepTime = sleepTime;
     }
@@ -27,14 +31,14 @@ public class MulticastService
 
     private void SendProbeMessage(string protocol, int port)
     {
-        var probeMessage = Builder.BuildProbe(protocol, port);
+        var probeMessage = Builder.Builder.BuildProbe(protocol, port);
         var bytes = Encoding.ASCII.GetBytes(probeMessage);
         _udpClient.Send(bytes, bytes.Length, _multicastEndPoint);
     }
 
     public void SendDataMessage(string protocol, int port)
     {
-        var dataMessage = Builder.BuildProbe(protocol,port);
+        var dataMessage = Builder.Builder.BuildData(protocol, port);
         var bytes = Encoding.ASCII.GetBytes(dataMessage);
         _udpClient.Send(bytes, bytes.Length, _multicastEndPoint);
     }
