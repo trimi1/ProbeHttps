@@ -28,7 +28,7 @@ public class UnicastHandler : IMessageHandler
             using var reader = new StreamReader(stream);
             var message = await reader.ReadToEndAsync();
             
-            Console.WriteLine($"Received unicast message: {message}");
+            ReceivedMessage?.Invoke(this, message);
         }
     }
 }

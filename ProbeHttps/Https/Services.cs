@@ -1,5 +1,3 @@
-using System.Collections.ObjectModel;
-
 namespace ProbeHttps.Https;
 
 public static class Services

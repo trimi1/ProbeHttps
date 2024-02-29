@@ -1,18 +1,21 @@
+using System.Text.RegularExpressions;
+using ProbeHttps.Config;
 using ProbeHttps.Interface;
 
 namespace ProbeHttps.Https.Strategy;
 
 public class StatusOfMessageStrategy : IMessageStrategy
 {
-    private readonly IAnalyzer _analyzer;
-
-    public StatusOfMessageStrategy(IAnalyzer analyzer)
-    {
-        _analyzer = analyzer;
-    }
-
     public void HandleMessage(string message)
     {
-        var result = _analyzer.HandleStatusOfMessage(message);
+        var result = HandleStatusOfMessage(message);
+    }
+    
+    private static int? HandleStatusOfMessage(string message)
+    {
+        var match = Regex.Match(message, Constants.StatusOfRegex);
+        if (!match.Success) return null;
+
+        return int.Parse(match.Groups["Id"].Value);
     }
 }
