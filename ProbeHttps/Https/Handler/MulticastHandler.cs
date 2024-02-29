@@ -11,12 +11,9 @@ public class MulticastHandler
     private readonly int _unicastPort;
     private readonly Thread _thread;
     private readonly int _sleepTime;
-<<<<<<< HEAD:ProbeHttps/MulticastService.cs
-    public MulticastService(string multicastAddress, int multicastPort, int unicastPort,int sleepTime)
-=======
+
 
     public MulticastHandler(string multicastAddress, int multicastPort, int unicastPort, int sleepTime)
->>>>>>> b197f30ffa71587a497af7041624c3d4ea9ea9af:ProbeHttps/Https/Handler/MulticastHandler.cs
     {
         _udpClient = new UdpClient();
         _multicastEndPoint = new IPEndPoint(IPAddress.Parse(multicastAddress), multicastPort);

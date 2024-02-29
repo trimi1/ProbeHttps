@@ -18,11 +18,5 @@ if (config == null)
     return;
 }
 
-<<<<<<< HEAD
-var multicastService = new MulticastService(config.MulticastAddress, config.MulticastPort, config.UnicastPort,config.MulticastDelay);
-multicastService.Start();
-
-=======
 var probe = new Probe(new UnicastHandler(config.MulticastAddress, config.UnicastPort), config, new Analyzer(), new ServiceHandler());
 probe.StartServiceMonitoring();
->>>>>>> b197f30ffa71587a497af7041624c3d4ea9ea9af

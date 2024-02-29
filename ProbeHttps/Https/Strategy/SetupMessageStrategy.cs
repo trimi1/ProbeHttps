@@ -6,6 +6,7 @@ namespace ProbeHttps.Https.Strategy;
 
 public class SetupMessageStrategy : IMessageStrategy
 {
+    private readonly IList<string> _urlList = new List<string>();
     public void HandleMessage(string message)
     {
         var result = HandleSetupMessage(message);
@@ -14,12 +15,15 @@ public class SetupMessageStrategy : IMessageStrategy
         foreach (var aurl in result.Value.Aurls)
         {
             var parts = aurl.Split('!');
+            if (_urlList.Contains(parts[1])) continue;
             Services.ServicesList.Add(
                 new Service(result.Value.Frequency, parts[1], int.Parse(parts[2]), int.Parse(parts[3]))
             );
+            _urlList.Add(parts[1]);
+
         }
     }
-    
+
     private static (int Frequency, IList<string> Aurls)? HandleSetupMessage(string message)
     {
         var match = Regex.Match(message, Constants.SetupRegex);
