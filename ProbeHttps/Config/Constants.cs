@@ -28,7 +28,6 @@ public static class Constants
     private const string AugmentedUrlRegex = $"{IdRegex}!{UrlRegex}!{MinRegex}!{MaxRegex}";
     private const string StateRegex = "OK|ALARM|DOWN|UNKNOWN";
 
-
     public const string SetupRegex =
         $"SETUP{SpRegex}(?<Frequency>{FrequencyRegex})(({SpRegex}(?<Aurls>{AugmentedUrlRegex})){{0,100}}){CrlfRegex}";
 

@@ -1,6 +1,8 @@
-﻿namespace ProbeHttps.Builder;
+﻿using ProbeHttps.Interface;
 
-public static class Builder
+namespace ProbeHttps.Builder;
+
+public class Builder : IBuilder
 {
     private const string Probe = "PROBE <protocol> <port>\n\n";
     private const string Data = "DATA <protocol> <port>\n\n";
@@ -8,10 +10,9 @@ public static class Builder
     private static string ReplacePlaceholder(string template, string placeholder, string value)
         => template.Replace("<" + placeholder + ">", value);
 
-    public static string BuildProbe(string protocol, int port)
+    public string BuildProbeMessage(string protocol, int port)
         => ReplacePlaceholder(ReplacePlaceholder(Probe, "protocol", protocol), "port", port.ToString());
-
-
-    public static string BuildData(string protocol, int port)
+    
+    public  string BuildDataMessage(string protocol, int port)
         => ReplacePlaceholder(ReplacePlaceholder(Data, "protocol", protocol), "port", port.ToString());
 }
