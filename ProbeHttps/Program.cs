@@ -31,6 +31,6 @@ if (config == null)
     return;
 }
 
-var multicastService = new MulticastService(config.MulticastAddress, config.MulticastPort, config.UnicastPort);
+var multicastService = new MulticastService(config.MulticastAddress, config.MulticastPort, config.UnicastPort,config.MulticastDelay);
 multicastService.Start();
 

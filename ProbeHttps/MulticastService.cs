@@ -12,13 +12,14 @@ public class MulticastService
     private readonly IPEndPoint _multicastEndPoint;
     private readonly int _unicastPort;
     private readonly Thread _thread;
-
-    public MulticastService(string multicastAddress, int multicastPort, int unicastPort)
+    private readonly int _sleepTime;
+    public MulticastService(string multicastAddress, int multicastPort, int unicastPort,int sleepTime)
     {
         _udpClient = new UdpClient();
         _multicastEndPoint = new IPEndPoint(IPAddress.Parse(multicastAddress), multicastPort);
         _unicastPort = unicastPort;
         _thread = new Thread(ThreadLoop);
+        _sleepTime = sleepTime;
     }
 
     public void Start()
@@ -43,7 +44,7 @@ public class MulticastService
         while (Thread.CurrentThread.IsAlive)
         {
             SendProbeMessage("https", 60202);
-            Thread.Sleep(90000);
+            Thread.Sleep(_sleepTime);
         }
     }
 }
