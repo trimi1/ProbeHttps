@@ -1,64 +1,50 @@
 ﻿using System.Text.RegularExpressions;
+using ProbeHttps.Interface;
 
 namespace ProbeHttps.analyzer;
 
-public class Analyzer
+public class Analyzer : IAnalyzer
 {
-    public const string LetterRegex = "[A-Za-z]";
-    public const string DigitRegex = "[0-9]";
-    public static readonly string LetterDigitRegex = "(" + LetterRegex + "|" + DigitRegex + ")";
-    public const string CrlfRegex = "\r\n";
-    public static readonly string PortRegex = DigitRegex + "{1,5}";
-    public const string CharacterSpecRegex = "[-_=./+*$°()\\[\\]{}^]";
-    public static readonly string CharacterPassRegex = "(" + LetterDigitRegex + "|" + CharacterSpecRegex + ")";
-    public const string SpRegex = "\\x20";
-    public static readonly string IdRegex = LetterDigitRegex + "{5,10}";
-    public static readonly string ProtocolRegex = LetterDigitRegex + "{3,15}";
-    public static readonly string UsernameRegex = LetterDigitRegex + "{3,50}";
-    public static readonly string PasswordRegex = CharacterPassRegex + "{3,50}";
-    public static readonly string AuthenticationRegex = CharacterPassRegex + "{3,50}";
-    public static readonly string PasswordAuthRegex = PasswordRegex + "(#" + AuthenticationRegex + ")?";
-    public static readonly string HostRegex = "(" + LetterDigitRegex + "|" + "\\." + "|" + "_" + "|" + "-" + ")" + "{3,50}";
-    public static readonly string PathRegex = "/(" + LetterDigitRegex + "|[.\\-_]){0,100}";
-    public static readonly string UrlRegex = ProtocolRegex + "://(" + UsernameRegex + "(:"
-                                              + PasswordAuthRegex + ")?@)?" + HostRegex + "(" + PortRegex + ")?" + PathRegex;
-    public static readonly string MinRegex = DigitRegex + "{1,8}";
-    public static readonly string MaxRegex = DigitRegex + "{1,8}";
-    public static readonly string FrequencyRegex = DigitRegex + "{1,8}";
-    public static readonly string AugmentedUrlRegex = IdRegex + "!" + UrlRegex + "!" + MinRegex + "!" + MaxRegex;
-    public const string StateRegex = "OK|ALARM|DOWN|UNKNOWN";
+    private const string LetterRegex = "[A-Za-z]";
+    private const string DigitRegex = "[0-9]";
+    private const string LetterDigitRegex = "(" + LetterRegex + "|" + DigitRegex + ")";
+    private const string CrlfRegex = "\r\n";
+    private const string PortRegex = DigitRegex + "{1,5}";
+    private const string CharacterSpecRegex = "[-_=./+*$°()\\[\\]{}^]";
+    private const string CharacterPassRegex = "(" + LetterDigitRegex + "|" + CharacterSpecRegex + ")";
+    private const string SpRegex = "\\x20";
+    private const string IdRegex = LetterDigitRegex + "{5,10}";
+    private const string ProtocolRegex = LetterDigitRegex + "{3,15}";
+    private const string UsernameRegex = LetterDigitRegex + "{3,50}";
+    private const string PasswordRegex = CharacterPassRegex + "{3,50}";
+    private const string AuthenticationRegex = CharacterPassRegex + "{3,50}";
+    private const string PasswordAuthRegex = PasswordRegex + "(#" + AuthenticationRegex + ")?";
+    private const string HostRegex = "(" + LetterDigitRegex + "|" + "\\." + "|" + "_" + "|" + "-" + ")" + "{3,50}";
+    private const string PathRegex = "/(" + LetterDigitRegex + "|[.\\-_]){0,100}";
+
+    private const string UrlRegex = ProtocolRegex + "://(" + UsernameRegex + "(:" + PasswordAuthRegex + ")?@)?" +
+                                    HostRegex + "(" + PortRegex + ")?" + PathRegex;
+
+    private const string MinRegex = DigitRegex + "{1,8}";
+    private const string MaxRegex = DigitRegex + "{1,8}";
+    private const string FrequencyRegex = DigitRegex + "{1,8}";
+    private const string AugmentedUrlRegex = IdRegex + "!" + UrlRegex + "!" + MinRegex + "!" + MaxRegex;
+    private const string StateRegex = "OK|ALARM|DOWN|UNKNOWN";
 
 
-    public static string SetupRegex = "SETUP" + SpRegex + FrequencyRegex + "((" + SpRegex + AugmentedUrlRegex + "){0,100})" + CrlfRegex;
-    public static string StatusofRegex = "STATUSOF" + SpRegex + IdRegex + CrlfRegex;
-    public static string StatusRegex = "STATUS" + SpRegex + IdRegex + SpRegex + StateRegex + CrlfRegex;
+    private const string SetupRegex = "SETUP" + SpRegex + "(?<Frequency>" + FrequencyRegex + ")" + "((" + SpRegex +
+                                      "(?<Aurls>" + AugmentedUrlRegex + ")" +
+                                      "){0,100})" + CrlfRegex;
 
-    private IEnumerable<string> _regexList = new List<string>()
+    private const string StatusOfRegex = "STATUSOF" + SpRegex + "(?<Id>" + IdRegex + ")" + CrlfRegex;
+
+    private const string StatusRegex =
+        "STATUS" + SpRegex + "(?<Id>" + IdRegex + ")" + SpRegex + "(?<State>" + StateRegex + ")" + CrlfRegex;
+
+    private readonly IEnumerable<string> _regexList = new List<string>
     {
-        LetterRegex,
-        DigitRegex,
-        LetterDigitRegex,
-        CrlfRegex,
-        PortRegex,
-        CharacterSpecRegex,
-        CharacterPassRegex,
-        SpRegex,
-        IdRegex,
-        ProtocolRegex,
-        UsernameRegex,
-        PasswordRegex,
-        AuthenticationRegex,
-        PasswordAuthRegex,
-        HostRegex,
-        PathRegex,
-        UrlRegex,
-        MinRegex,
-        MaxRegex,
-        FrequencyRegex,
-        AugmentedUrlRegex,
-        StateRegex,
         SetupRegex,
-        StatusofRegex,
+        StatusOfRegex,
         StatusRegex,
     };
 
@@ -68,10 +54,37 @@ public class Analyzer
         {
             if (Regex.IsMatch(toAnalyze, r))
             {
-                return _regexList.Select((value,i)=>new {i,value}).First(x=>x.value==r).i;
+                return _regexList.Select((value, i) => new { i, value }).First(x => x.value == r).i;
             }
         }
+
         return -1;
     }
 
+    public object? HandleSetupMessage(string message)
+    {
+        var match = Regex.Match(message, SetupRegex);
+        if (!match.Success) return null;
+
+        var frequency = match.Groups["Frequency"].Value;
+        var aurs = match.Groups["Aurls"].Captures.Select(c => c.Value).ToList();
+
+        return (int.Parse(frequency), aurs);
+    }
+
+    public object? HandleStatusOfMessage(string message)
+    {
+        var match = Regex.Match(message, StatusOfRegex);
+        if (!match.Success) return null;
+
+        return int.Parse(match.Groups["Id"].Value);
+    }
+
+    public object? HandleStatusMessage(string message)
+    {
+        var match = Regex.Match(message, StatusRegex);
+        if (!match.Success) return null;
+
+        return (int.Parse(match.Groups["Id"].Value), match.Groups["State"].Value);
+    }
 }

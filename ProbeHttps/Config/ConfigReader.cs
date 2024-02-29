@@ -1,13 +1,13 @@
 using Newtonsoft.Json;
 
-namespace ProbeHttps;
+namespace ProbeHttps.Config;
 
 public class ConfigReader
 {
-    public static Config? GetConfig(string path)
+    public static Configuration? GetConfig(string path)
     {
         using StreamReader reader = new(path);
         var json = reader.ReadToEnd();
-        return JsonConvert.DeserializeObject<Config>(json);
+        return JsonConvert.DeserializeObject<Configuration>(json);
     }
 }
