@@ -2,15 +2,15 @@ using System.Net;
 using System.Net.Sockets;
 using ProbeHttps.Interface;
 
-namespace ProbeHttps.Https;
+namespace ProbeHttps.Https.Handler;
 
-public class UnicastService : IMessageHandler
+public class UnicastHandler : IMessageHandler
 {
     private readonly TcpListener _tcpListener;
     
     public event EventHandler<string>? ReceivedMessage;
     
-    public UnicastService(string address, int port)
+    public UnicastHandler(string address, int port)
     {
         _tcpListener = new TcpListener(IPAddress.Any, port);
         _tcpListener.Start();

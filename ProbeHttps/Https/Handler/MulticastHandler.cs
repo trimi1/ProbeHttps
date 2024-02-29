@@ -2,9 +2,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace ProbeHttps.Https;
+namespace ProbeHttps.Https.Handler;
 
-public class MulticastService
+public class MulticastHandler
 {
     private readonly UdpClient _udpClient;
     private readonly IPEndPoint _multicastEndPoint;
@@ -12,7 +12,7 @@ public class MulticastService
     private readonly Thread _thread;
     private readonly int _sleepTime;
 
-    public MulticastService(string multicastAddress, int multicastPort, int unicastPort, int sleepTime)
+    public MulticastHandler(string multicastAddress, int multicastPort, int unicastPort, int sleepTime)
     {
         _udpClient = new UdpClient();
         _multicastEndPoint = new IPEndPoint(IPAddress.Parse(multicastAddress), multicastPort);
