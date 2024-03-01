@@ -17,12 +17,14 @@ public class SetupMessageStrategy : IMessageStrategy
             var parts = aurl.Split('!');
             if (_urlList.Contains(parts[1])) continue;
             Services.ServicesList.Add(
-                new Service(result.Value.Frequency, parts[1], int.Parse(parts[2]), int.Parse(parts[3]))
+                new Service(parts[0],result.Value.Frequency, parts[1], int.Parse(parts[2]), int.Parse(parts[3]))
             );
             _urlList.Add(parts[1]);
-
         }
     }
+
+
+
 
     private static (int Frequency, IList<string> Aurls)? HandleSetupMessage(string message)
     {
@@ -30,8 +32,8 @@ public class SetupMessageStrategy : IMessageStrategy
         if (!match.Success) return null;
 
         var frequency = match.Groups["Frequency"].Value;
-        var aurs = match.Groups["Aurls"].Captures.Select(c => c.Value).ToList();
+        var aurls = match.Groups["Aurls"].Captures.Select(c => c.Value).ToList();
 
-        return (Frequency: int.Parse(frequency), Aurls: aurs);
+        return (Frequency: int.Parse(frequency), Aurls: aurls);
     }
 }

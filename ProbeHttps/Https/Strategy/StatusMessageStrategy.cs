@@ -9,6 +9,13 @@ public class StatusMessageStrategy : IMessageStrategy
     public void HandleMessage(string message)
     {
         var result = HandleStatusMessage(message);
+        foreach (var service in Services.ServicesList)
+        {
+            if (service.Id.Equals(result.Value.Id.ToString()))
+            {
+
+            }
+        }
     }
 
     private static (int Id, string State)? HandleStatusMessage(string message)

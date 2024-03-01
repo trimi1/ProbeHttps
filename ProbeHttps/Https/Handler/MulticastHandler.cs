@@ -13,22 +13,14 @@ public class MulticastHandler
     private readonly int _sleepTime;
     private readonly IBuilder _builder;
 
-<<<<<<< HEAD
 
-    public MulticastHandler(string multicastAddress, int multicastPort, int unicastPort, int sleepTime)
-=======
     public MulticastHandler(string multicastAddress, int multicastPort, int sleepTime, IBuilder builder)
->>>>>>> 486efa9bad2c8eaef4f9b8be7e83d93f14d37014
     {
         _udpClient = new UdpClient();
         _multicastEndPoint = new IPEndPoint(IPAddress.Parse(multicastAddress), multicastPort);
         _sleepTime = sleepTime;
         _thread = new Thread(ThreadLoop);
-<<<<<<< HEAD
-        _sleepTime = sleepTime;
-=======
         _builder = builder;
->>>>>>> 486efa9bad2c8eaef4f9b8be7e83d93f14d37014
     }
 
     private void SendProbeMessage(string protocol, int port)
