@@ -29,7 +29,7 @@ public class Probe
         _serviceHandler = serviceHandler;
 
         OnReceivedMessage("", "SETUP 10000 http1!https://www.swilabus.com/!200!1500\r\n");
-        // OnReceivedMessage("", "STATUSOF 12345\r\n");
+        OnReceivedMessage("", "STATUSOF http1\r\n");
         // OnReceivedMessage("", "STATUS 12345 OK\r\n");
     }
 

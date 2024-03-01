@@ -9,13 +9,19 @@ public class StatusOfMessageStrategy : IMessageStrategy
     public void HandleMessage(string message)
     {
         var result = HandleStatusOfMessage(message);
+        foreach (var service in Services.ServicesList)
+        {
+            if (service.Id == result)
+            {
+                Console.WriteLine($"Service {service.Id} is {service.State}");
+            }
+        }
     }
-    
-    private static int? HandleStatusOfMessage(string message)
+
+
+    private static string? HandleStatusOfMessage(string message)
     {
         var match = Regex.Match(message, Constants.StatusOfRegex);
-        if (!match.Success) return null;
-
-        return int.Parse(match.Groups["Id"].Value);
+        return !match.Success ? null : match.Groups["Id"].Value;
     }
 }
