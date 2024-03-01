@@ -27,11 +27,15 @@ public class Sender : ISender
 
     public void SendDataMessage(string protocol, int port)
     {
-        throw new NotImplementedException();
+        var dataMessage = _builder.BuildDataMessage(protocol, port);
+        var bytes = Encoding.ASCII.GetBytes(dataMessage);
+        _udpClient.Send(bytes, bytes.Length, _multicastEndPoint);
     }
 
     public void SendStatusMessage(string id, string state)
     {
-        throw new NotImplementedException();
+        var statusMessage = _builder.BuildStatusMessage(id, state);
+        var bytes = Encoding.ASCII.GetBytes(statusMessage);
+        _udpClient.Send(bytes, bytes.Length, _multicastEndPoint);
     }
 }
