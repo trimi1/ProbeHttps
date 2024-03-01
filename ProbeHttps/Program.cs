@@ -18,6 +18,6 @@ if (config == null)
     return;
 }
 
-var probe = new Probe(config, new ServiceHandler(), new Analyzer(), new Builder(),new Sender());
+var probe = new Probe(config, new ServiceHandler(), new Analyzer(),new Sender(new Builder(), config.MulticastAddress, config.MulticastPort));
 probe.StartServiceMonitoring();
 probe.StartMulticastProbeAnnouncement();

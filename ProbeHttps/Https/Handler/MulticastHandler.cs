@@ -7,37 +7,28 @@ namespace ProbeHttps.Https.Handler;
 
 public class MulticastHandler
 {
-    private readonly UdpClient _udpClient;
-    private readonly IPEndPoint _multicastEndPoint;
     private readonly Thread _thread;
     private readonly int _sleepTime;
-    private readonly IBuilder _builder;
     private readonly ISender _sender;
 
-    public MulticastHandler(string multicastAddress, int multicastPort, int sleepTime, IBuilder builder,ISender sender )
-
+    public MulticastHandler(int sleepTime, ISender sender)
     {
-        _udpClient = new UdpClient();
-        _multicastEndPoint = new IPEndPoint(IPAddress.Parse(multicastAddress), multicastPort);
         _thread = new Thread(ThreadLoop);
         _sleepTime = sleepTime;
-        _builder = builder;
         _sender = sender;
     }
 
     private void SendProbeMessage(string protocol, int port)
     {
-        var probeMessage = _builder.BuildProbeMessage(protocol, port);
-        var bytes = Encoding.ASCII.GetBytes(probeMessage);
-        _udpClient.Send(bytes, bytes.Length, _multicastEndPoint);
+        _sender.SendProbeMessage(protocol, port);
     }
 
-    public void SendDataMessage(string protocol, int port)
-    {
-        var dataMessage = _builder.BuildProbeMessage(protocol, port);
-        var bytes = Encoding.ASCII.GetBytes(dataMessage);
-        _udpClient.Send(bytes, bytes.Length, _multicastEndPoint);
-    }
+    // public void SendDataMessage(string protocol, int port)
+    // {
+    //     var dataMessage = _builder.BuildProbeMessage(protocol, port);
+    //     var bytes = Encoding.ASCII.GetBytes(dataMessage);
+    //     _udpClient.Send(bytes, bytes.Length, _multicastEndPoint);
+    // }
 
 
     private void ThreadLoop()
