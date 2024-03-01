@@ -23,12 +23,15 @@ public class MulticastHandler
         _sender.SendProbeMessage(protocol, port);
     }
 
-    // public void SendDataMessage(string protocol, int port)
-    // {
-    //     var dataMessage = _builder.BuildProbeMessage(protocol, port);
-    //     var bytes = Encoding.ASCII.GetBytes(dataMessage);
-    //     _udpClient.Send(bytes, bytes.Length, _multicastEndPoint);
-    // }
+    public void SendDataMessage(string protocol, int port)
+    {
+        _sender.SendDataMessage(protocol, port);
+    }
+
+    public void SendStatusMessage(string id, string state)
+    {
+        _sender.SendStatusMessage(id, state);
+    }
 
 
     private void ThreadLoop()

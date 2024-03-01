@@ -16,6 +16,6 @@ public class Builder : IBuilder
     public  string BuildDataMessage(string protocol, int port)
         => ReplacePlaceholder(ReplacePlaceholder(Data, "protocol", protocol), "port", port.ToString());
 
-    public string BuildStatusMessage(int id, string state)
+    public string BuildStatusMessage(string id, string state)
     => ReplacePlaceholder(ReplacePlaceholder(Status, "id", id.ToString()), "state", state);
 }
