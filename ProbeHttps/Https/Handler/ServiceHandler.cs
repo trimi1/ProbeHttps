@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using ProbeHttps.Interface;
 
 namespace ProbeHttps.Https.Handler;
 
@@ -6,9 +7,13 @@ public class ServiceHandler
 {
     private readonly Thread _thread;
     private readonly HttpClient _client;
+    private readonly ISender _sender;
+    private readonly int _port;
 
-    public ServiceHandler()
+    public ServiceHandler(ISender sender, int port)
     {
+        _sender = sender;
+        _port = port;
         _thread = new Thread(ThreadLoop);
         var handler = new HttpClientHandler();
         handler.AllowAutoRedirect = false;
@@ -19,9 +24,21 @@ public class ServiceHandler
     {
         while (Thread.CurrentThread.IsAlive)
         {
+            var anyStateChanged = false;
+
             foreach (var service in Services.ServicesList)
             {
+                var previousState = service.State;
                 CheckService(service).Wait();
+                if (service.State != previousState)
+                {
+                    anyStateChanged = true;
+                }
+            }
+
+            if (anyStateChanged)
+            {
+                _sender.SendDataMessage("https", _port);
             }
 
             Thread.Sleep(Services.Frequency);

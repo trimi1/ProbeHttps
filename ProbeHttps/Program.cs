@@ -1,8 +1,6 @@
 ﻿using ProbeHttps.analyzer;
-using ProbeHttps.Builder;
 using ProbeHttps.Config;
 using ProbeHttps.Https;
-using ProbeHttps.Https.Handler;
 
 if (!File.Exists(args[0]))
 {
@@ -18,6 +16,6 @@ if (config == null)
     return;
 }
 
-var probe = new Probe(config, new ServiceHandler(), new Analyzer(),new Sender(new Builder(), config.MulticastAddress, config.MulticastPort));
+var probe = new Probe(config, new Analyzer());
 probe.StartServiceMonitoring();
 probe.StartMulticastProbeAnnouncement();

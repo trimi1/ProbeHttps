@@ -16,12 +16,10 @@ public class StatusOfMessageStrategy : IMessageStrategy
     public void HandleMessage(string message)
     {
         var result = HandleStatusOfMessage(message);
-        foreach (var service in Services.ServicesList)
+        var service = Services.ServicesList.FirstOrDefault(s => s.Id == result);
+        if (service != null)
         {
-            if (service.Id == result)
-            {
-                _sender.SendStatusMessage(service.Id, service.State.ToString());
-            }
+            _sender.SendStatusMessage(service.Id, service.State.ToString());
         }
     }
 

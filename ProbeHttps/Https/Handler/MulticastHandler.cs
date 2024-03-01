@@ -1,6 +1,3 @@
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
 using ProbeHttps.Interface;
 
 namespace ProbeHttps.Https.Handler;
@@ -19,9 +16,7 @@ public class MulticastHandler
     }
 
     private void SendProbeMessage(string protocol, int port)
-    {
-        _sender.SendProbeMessage(protocol, port);
-    }
+        => _sender.SendProbeMessage(protocol, port);
 
     // public void SendDataMessage(string protocol, int port)
     // {
@@ -29,7 +24,6 @@ public class MulticastHandler
     //     var bytes = Encoding.ASCII.GetBytes(dataMessage);
     //     _udpClient.Send(bytes, bytes.Length, _multicastEndPoint);
     // }
-
 
     private void ThreadLoop()
     {
