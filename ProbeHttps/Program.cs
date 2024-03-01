@@ -4,15 +4,13 @@ using ProbeHttps.Config;
 using ProbeHttps.Https;
 using ProbeHttps.Https.Handler;
 
-const string configFilePath =
-    @"/Users/quentin/Desktop/Documents/Ecole/HELMo/b2/reseau/ProbeHttps/ProbeHttps/Resource/config.json";
-if (!File.Exists(configFilePath))
+if (!File.Exists(args[0]))
 {
     Console.WriteLine("Config file not found");
     return;
 }
 
-var config = ConfigReader.GetConfig(configFilePath);
+var config = ConfigReader.GetConfig(args[0]);
 
 if (config == null)
 {
@@ -20,6 +18,6 @@ if (config == null)
     return;
 }
 
-var probe = new Probe(config, new ServiceHandler(), new Analyzer(), new Builder());
+var probe = new Probe(config, new ServiceHandler(), new Analyzer(), new Builder(),new Sender());
 probe.StartServiceMonitoring();
 probe.StartMulticastProbeAnnouncement();

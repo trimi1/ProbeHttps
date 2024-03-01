@@ -6,6 +6,13 @@ namespace ProbeHttps.Https.Strategy;
 
 public class StatusOfMessageStrategy : IMessageStrategy
 {
+    private readonly ISender _sender;
+
+    public StatusOfMessageStrategy(ISender sender)
+    {
+        _sender = sender;
+    }
+
     public void HandleMessage(string message)
     {
         var result = HandleStatusOfMessage(message);
@@ -13,7 +20,7 @@ public class StatusOfMessageStrategy : IMessageStrategy
         {
             if (service.Id == result)
             {
-                Console.WriteLine($"Service {service.Id} is {service.State}");
+                _sender.SendStatusMessage(service.Id, service.State.ToString());
             }
         }
     }

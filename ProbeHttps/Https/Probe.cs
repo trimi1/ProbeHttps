@@ -12,8 +12,7 @@ public class Probe
     private readonly IDictionary<int, IMessageStrategy> _messageStrategies;
     private readonly ServiceHandler _serviceHandler;
     private readonly MulticastHandler _multicastHandler;
-
-    public Probe(Configuration config, ServiceHandler serviceHandler, IAnalyzer analyzer, IBuilder builder)
+    public Probe(Configuration config, ServiceHandler serviceHandler, IAnalyzer analyzer, IBuilder builder, ISender sender)
     {
         _analyzer = analyzer;
         _messageHandler = new UnicastHandler(config.MulticastAddress, config.UnicastPort);
@@ -21,11 +20,11 @@ public class Probe
         _messageStrategies = new Dictionary<int, IMessageStrategy>
         {
             { 0, new SetupMessageStrategy() },
-            { 1, new StatusOfMessageStrategy() },
+            { 1, new StatusOfMessageStrategy(sender) },
             { 2, new StatusMessageStrategy() }
         };
         _multicastHandler =
-            new MulticastHandler(config.MulticastAddress, config.MulticastPort, config.MulticastDelay, builder);
+            new MulticastHandler(config.MulticastAddress, config.MulticastPort, config.MulticastDelay, builder, sender);
         _serviceHandler = serviceHandler;
 
         OnReceivedMessage("", "SETUP 10000 http1!https://www.swilabus.com/!200!1500\r\n");

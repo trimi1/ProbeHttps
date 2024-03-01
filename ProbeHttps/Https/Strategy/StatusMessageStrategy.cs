@@ -13,7 +13,7 @@ public class StatusMessageStrategy : IMessageStrategy
         {
             if (service.Id.Equals(result.Value.Id.ToString()))
             {
-
+                Console.WriteLine($"Service {service.Id} is {result.Value.State} Test");
             }
         }
     }

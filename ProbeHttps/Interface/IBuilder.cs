@@ -4,4 +4,5 @@ public interface IBuilder
 {
     string BuildProbeMessage(string protocol, int port);
     string BuildDataMessage(string protocol, int port);
+    string BuildStatusMessage(int id, string state);
 }
