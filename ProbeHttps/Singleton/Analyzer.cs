@@ -1,17 +1,21 @@
 ﻿using System.Text.RegularExpressions;
 using ProbeHttps.Config;
-using ProbeHttps.Interface;
 
-namespace ProbeHttps.analyzer;
+namespace ProbeHttps.Singleton;
 
-public class Analyzer : IAnalyzer
+public class Analyzer
 {
+    private static Analyzer? _instance;
+
     private readonly IEnumerable<string> _regexList = new List<string>
     {
         Constants.SetupRegex,
         Constants.StatusOfRegex,
         Constants.StatusRegex,
     };
+
+    public static Analyzer GetInstance()
+        => _instance ??= new Analyzer();
 
     public int Analyze(string toAnalyze)
     {

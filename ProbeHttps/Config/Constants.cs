@@ -35,4 +35,6 @@ public static class Constants
 
     public const string StatusRegex =
         $"STATUS{SpRegex}(?<Id>{IdRegex}){SpRegex}(?<State>{StateRegex}){CrlfRegex}";
+    
+    public const string Protocol = "https";
 }

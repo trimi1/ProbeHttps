@@ -3,17 +3,14 @@ using ProbeHttps.Interface;
 
 namespace ProbeHttps.Https.Handler;
 
-public class ServiceHandler
+public class ServiceHandler : IObservable
 {
     private readonly Thread _thread;
     private readonly HttpClient _client;
-    private readonly ISender _sender;
-    private readonly int _port;
+    public event Action? StateChanged;
 
-    public ServiceHandler(ISender sender, int port)
+    public ServiceHandler()
     {
-        _sender = sender;
-        _port = port;
         _thread = new Thread(ThreadLoop);
         var handler = new HttpClientHandler();
         handler.AllowAutoRedirect = false;
@@ -24,21 +21,11 @@ public class ServiceHandler
     {
         while (Thread.CurrentThread.IsAlive)
         {
-            var anyStateChanged = false;
-
-            foreach (var service in Services.ServicesList)
-            {
-                var previousState = service.State;
-                CheckService(service).Wait();
-                if (service.State != previousState)
-                {
-                    anyStateChanged = true;
-                }
-            }
+            var anyStateChanged = CheckServices();
 
             if (anyStateChanged)
             {
-                _sender.SendDataMessage("https", _port);
+                Console.WriteLine("changed");
             }
 
             Thread.Sleep(Services.Frequency);
@@ -47,6 +34,25 @@ public class ServiceHandler
 
     public void StartMonitoring()
         => _thread.Start();
+
+    private bool CheckServices()
+    {
+        var anyStateChanged = false;
+
+        foreach (var service in Services.ServicesList)
+        {
+            var previousState = service.State;
+            CheckService(service).Wait();
+            if (service.State != previousState)
+            {
+                anyStateChanged = true;
+            }
+        }
+
+        if (anyStateChanged) StateChanged?.Invoke();
+
+        return anyStateChanged;
+    }
 
     private async Task CheckService(Service service)
     {

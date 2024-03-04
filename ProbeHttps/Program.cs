@@ -1,6 +1,5 @@
-﻿using ProbeHttps.analyzer;
-using ProbeHttps.Config;
-using ProbeHttps.Https;
+﻿using ProbeHttps.Config;
+using ProbeHttps.Https.Handler;
 
 if (!File.Exists(args[0]))
 {
@@ -16,6 +15,11 @@ if (config == null)
     return;
 }
 
-var probe = new Probe(config, new Analyzer());
-probe.StartServiceMonitoring();
-probe.StartMulticastProbeAnnouncement();
+var serviceHandler = new ServiceHandler();
+serviceHandler.StartMonitoring();
+
+var multicastHandler = new MulticastHandler(config.MulticastDelay, config.MulticastAddress, config.MulticastPort, serviceHandler);
+multicastHandler.StartAnnouncement();
+
+var unicastHandler = new UnicastHandler(config.UnicastPort);
+unicastHandler.StartListening();
