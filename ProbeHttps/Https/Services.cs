@@ -10,7 +10,6 @@ public static class Services
 public class Service
 {
     public string Id { get; set; }
-    public int Frequency { get; set; }
     public string Url { get; set; }
     public int ExpectedStatusCode { get; set; }
     public int MaxResponseTime { get; set; }
