@@ -72,24 +72,28 @@ public class UnicastHandler
     
     private static void HandleSetupMessage(string message)
     {
-        var match = Regex.Match(message, Constants.SetupRegex);
-        if (!match.Success) return;
-        var frequency = match.Groups["Frequency"].Value;
-        var aurls = match.Groups["Aurls"].Captures.Select(c => c.Value).ToList();
-
+        var setupMatch = Regex.Match(message, Constants.SetupRegex);
+        if (!setupMatch.Success) return;
+        
+        var frequency = setupMatch.Groups["Frequency"].Value;
         Services.Frequency = int.Parse(frequency);
 
-        foreach (var parts in aurls.Select(aurl => aurl.Split('!')).Where(parts => !Services.Urls.Contains(parts[1])))
+        var aurls = setupMatch.Groups["Aurls"].Captures.Select(c => c.Value).ToList();
+
+        foreach (var aurl in aurls)
         {
-            Services.Urls.Add(parts[1]);
-            Services.ServicesList.Add(
-                new Service(
-                    parts[0],
-                    parts[1],
-                    int.Parse(parts[2]),
-                    int.Parse(parts[3])
-                )
-            );
+            var aurlMatch = Regex.Match(aurl, Constants.AugmentedUrlRegex);
+            if (!aurlMatch.Success) continue;
+            
+            var id = aurlMatch.Groups["Id"].Value;
+            var url = aurlMatch.Groups["Url"].Value;
+            var status = int.Parse(aurlMatch.Groups["Min"].Value);
+            var time = int.Parse(aurlMatch.Groups["Max"].Value);
+
+            if (Services.Urls.Contains(url)) continue;
+            
+            Services.Urls.Add(url);
+            Services.ServicesList.Add(new Service(id, url, status, time));
         }
     }
     

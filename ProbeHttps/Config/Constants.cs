@@ -25,7 +25,10 @@ public static class Constants
     private const string MinRegex = $"{DigitRegex}{{1,8}}";
     private const string MaxRegex = $"{DigitRegex}{{1,8}}";
     private const string FrequencyRegex = $"{DigitRegex}{{1,8}}";
-    private const string AugmentedUrlRegex = $"{IdRegex}!{UrlRegex}!{MinRegex}!{MaxRegex}";
+
+    public const string AugmentedUrlRegex =
+        $"(?<Id>{IdRegex})!(?<Url>{UrlRegex})!(?<Min>{MinRegex})!(?<Max>{MaxRegex})";
+
     private const string StateRegex = "OK|ALARM|DOWN|UNKNOWN";
 
     public const string SetupRegex =
@@ -35,6 +38,6 @@ public static class Constants
 
     public const string StatusRegex =
         $"STATUS{SpRegex}(?<Id>{IdRegex}){SpRegex}(?<State>{StateRegex}){CrlfRegex}";
-    
+
     public const string Protocol = "https";
 }
