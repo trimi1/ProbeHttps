@@ -74,12 +74,10 @@ public class UnicastHandler
     {
         var setupMatch = Regex.Match(message, Constants.SetupRegex);
         if (!setupMatch.Success) return;
-        
         var frequency = setupMatch.Groups["Frequency"].Value;
         Services.Frequency = int.Parse(frequency);
 
         var aurls = setupMatch.Groups["Aurls"].Captures.Select(c => c.Value).ToList();
-
         foreach (var aurl in aurls)
         {
             var aurlMatch = Regex.Match(aurl, Constants.AugmentedUrlRegex);
@@ -91,7 +89,7 @@ public class UnicastHandler
             var time = int.Parse(aurlMatch.Groups["Max"].Value);
 
             if (Services.Urls.Contains(url)) continue;
-            
+                
             Services.Urls.Add(url);
             Services.ServicesList.Add(new Service(id, url, status, time));
         }
@@ -101,7 +99,7 @@ public class UnicastHandler
     {
         var match = Regex.Match(message, Constants.StatusOfRegex);
         var id = !match.Success ? null : match.Groups["Id"].Value;
-
+        
         var service = Services.ServicesList.FirstOrDefault(s => s.Id == id);
         if (service != null)
         {

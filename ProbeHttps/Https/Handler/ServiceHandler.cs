@@ -21,13 +21,7 @@ public class ServiceHandler : IObservable
     {
         while (Thread.CurrentThread.IsAlive)
         {
-            var anyStateChanged = CheckServices();
-
-            if (anyStateChanged)
-            {
-                Console.WriteLine("changed");
-            }
-
+            CheckServices();
             Thread.Sleep(Services.Frequency);
         }
     }
@@ -35,7 +29,7 @@ public class ServiceHandler : IObservable
     public void StartMonitoring()
         => _thread.Start();
 
-    private bool CheckServices()
+    private void CheckServices()
     {
         var anyStateChanged = false;
 
@@ -50,8 +44,6 @@ public class ServiceHandler : IObservable
         }
 
         if (anyStateChanged) StateChanged?.Invoke();
-
-        return anyStateChanged;
     }
 
     private async Task CheckService(Service service)

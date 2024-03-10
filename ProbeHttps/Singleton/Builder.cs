@@ -4,9 +4,9 @@ namespace ProbeHttps.Singleton;
 
 public static class Builder
 {
-    private const string Probe = "PROBE <protocol> <port>\n\n";
-    private const string Data = "DATA <protocol> <port>\n\n";
-    private const string Status = "STATUS <id> <state>\n\n";
+    private const string Probe = "PROBE <protocol> <port>\r\n";
+    private const string Data = "DATA <protocol> <port>\r\n";
+    private const string Status = "STATUS <id> <state>\r\n";
 
     private static string ReplacePlaceholder(string template, string placeholder, string value)
         => template.Replace("<" + placeholder + ">", value);
@@ -18,5 +18,5 @@ public static class Builder
         => ReplacePlaceholder(ReplacePlaceholder(Data, "protocol", protocol), "port", port.ToString());
 
     public static string BuildStatusMessage(string id, string state)
-        => ReplacePlaceholder(ReplacePlaceholder(Status, "id", id.ToString()), "state", state);
+        => ReplacePlaceholder(ReplacePlaceholder(Status, "id", id), "state", state);
 }
