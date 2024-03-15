@@ -32,9 +32,9 @@ public static class Constants
     private const string StateRegex = "OK|ALARM|DOWN|UNKNOWN";
 
     public const string SetupRegex =
-        $"SETUP{SpRegex}(?<Frequency>{FrequencyRegex})(({SpRegex}(?<Aurls>{AugmentedUrlRegex})){{0,100}}){CrlfRegex}";
+        $"SETUP{SpRegex}(?<Frequency>{FrequencyRegex})(({SpRegex}(?<Aurls>{AugmentedUrlRegex})){{0,100}})";
 
-    public const string StatusOfRegex = $"STATUSOF{SpRegex}(?<Id>{IdRegex}){CrlfRegex}";
+    public const string StatusOfRegex = $"STATUSOF{SpRegex}(?<Id>{IdRegex})";
 
     public const string StatusRegex =
         $"STATUS{SpRegex}(?<Id>{IdRegex}){SpRegex}(?<State>{StateRegex}){CrlfRegex}";

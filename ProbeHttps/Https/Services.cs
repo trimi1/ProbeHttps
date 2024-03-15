@@ -3,16 +3,16 @@ namespace ProbeHttps.Https;
 public static class Services
 {
     public static int Frequency { get; set; } = 10000;
-    public static List<string> Urls { get; set; } = new();
+    public static List<string> Urls { get; } = new();
     public static List<Service> ServicesList { get; } = new();
 }
 
 public class Service
 {
-    public string Id { get; set; }
-    public string Url { get; set; }
-    public int ExpectedStatusCode { get; set; }
-    public int MaxResponseTime { get; set; }
+    public string Id { get; }
+    public string Url { get; }
+    public int ExpectedStatusCode { get; }
+    public int MaxResponseTime { get; }
     public State State { get; set; }
 
     public Service(string id, string url, int expectedStatusCode, int maxResponseTime, State state = State.Unknown)

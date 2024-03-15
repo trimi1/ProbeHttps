@@ -11,7 +11,6 @@ public class Analyzer
     {
         Constants.SetupRegex,
         Constants.StatusOfRegex,
-        Constants.StatusRegex,
     };
 
     public static Analyzer GetInstance()

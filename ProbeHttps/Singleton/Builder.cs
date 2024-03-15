@@ -1,5 +1,4 @@
-﻿using ProbeHttps.Interface;
-
+﻿
 namespace ProbeHttps.Singleton;
 
 public static class Builder

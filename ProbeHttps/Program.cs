@@ -18,7 +18,7 @@ if (config == null)
 var serviceHandler = new ServiceHandler();
 serviceHandler.StartMonitoring();
 
-var multicastHandler = new MulticastHandler(config.MulticastDelay, config.MulticastAddress, config.MulticastPort, serviceHandler);
+var multicastHandler = new MulticastHandler(config.MulticastDelay, config.MulticastAddress, config.MulticastPort, config.UnicastPort, serviceHandler);
 multicastHandler.StartAnnouncement();
 
 var unicastHandler = new UnicastHandler(config.UnicastPort);
