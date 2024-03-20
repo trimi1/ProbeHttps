@@ -1,5 +1,6 @@
 ﻿using ProbeHttps.Config;
 using ProbeHttps.Https.Handler;
+using ProbeHttps.Security;
 
 if (!File.Exists(args[0]))
 {
@@ -21,5 +22,5 @@ serviceHandler.StartMonitoring();
 var multicastHandler = new MulticastHandler(config.MulticastDelay, config.MulticastAddress, config.MulticastPort, config.UnicastPort, serviceHandler);
 multicastHandler.StartAnnouncement();
 
-var unicastHandler = new UnicastHandler(config.UnicastPort);
+var unicastHandler = new UnicastHandler(config.UnicastPort, new AesEncryption(config.AesKey));
 unicastHandler.StartListening();

@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using ProbeHttps.Config;
+using ProbeHttps.Security;
 using ProbeHttps.Singleton;
 
 namespace ProbeHttps.Https.Handler;
@@ -12,13 +13,15 @@ public class UnicastHandler
     private readonly Thread _thread;
     private readonly TcpListener _tcpListener;
     private readonly Analyzer _analyzer;
+    private readonly AesEncryption _encryption;
 
-    public UnicastHandler(int port)
+    public UnicastHandler(int port, AesEncryption encryption)
     {
         _thread = new Thread(ListenForUnicastMessages);
         _tcpListener = new TcpListener(IPAddress.Any, port);
         _tcpListener.Start();
         _analyzer = Analyzer.GetInstance();
+        _encryption = encryption;
     }
 
     public void StartListening()
@@ -36,14 +39,18 @@ public class UnicastHandler
 
     private void HandleClient(TcpClient client)
     {
-        using var fromClient = new StreamReader(client.GetStream(), Encoding.UTF8);
-        using var toClient = new StreamWriter(client.GetStream(), Encoding.UTF8);
+        using var fromClient = new BinaryReader(client.GetStream(), Encoding.UTF8);
+        using var toClient = new BinaryWriter(client.GetStream(), Encoding.UTF8);
 
         try
         {
-            while (fromClient.ReadLine() is { } message)
+            var buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = fromClient.Read(buffer, 0, buffer.Length)) > 0)
             {
-                AnalyzeAndRespond(message, toClient);
+                var data = new byte[bytesRead];
+                Array.Copy(buffer, data, bytesRead);
+                AnalyzeAndRespond(data, toClient);
             }
         }
         catch (Exception ex)
@@ -52,10 +59,10 @@ public class UnicastHandler
         }
     }
 
-    private void AnalyzeAndRespond(string message, TextWriter toClient)
+    private void AnalyzeAndRespond(byte[] encryptedMessage, BinaryWriter toClient)
     {
-        var result = _analyzer.Analyze(message);
-        switch (result)
+        var message = _encryption.Decrypt(encryptedMessage);
+        switch (_analyzer.Analyze(message))
         {
             case 0:
                 HandleSetupMessage(message);
@@ -91,7 +98,7 @@ public class UnicastHandler
         }
     }
 
-    private static void HandleStatusMessage(string message, TextWriter toClient)
+    private void HandleStatusMessage(string message, BinaryWriter toClient)
     {
         var match = Regex.Match(message, Constants.StatusOfRegex);
         var id = !match.Success ? null : match.Groups["Id"].Value;
@@ -99,7 +106,9 @@ public class UnicastHandler
         var service = Services.ServicesList.FirstOrDefault(s => s.Id == id);
         if (service == null) return;
         
-        toClient.Write(Builder.BuildStatusMessage(service.Id, service.State.ToString().ToUpper()));
+        var encryptedMessage = _encryption.Encrypt(Builder.BuildStatusMessage(service.Id, service.State.ToString().ToUpper()));
+        toClient.Write(encryptedMessage);
         toClient.Flush();
+        Console.WriteLine(encryptedMessage.Length);
     }
 }
