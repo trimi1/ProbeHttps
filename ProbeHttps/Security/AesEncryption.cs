@@ -20,71 +20,44 @@ public class AesEncryption
     
     public byte[] Encrypt(string plainText)
     {
-        var nonce = new byte[12];
-        RandomNumberGenerator.Fill(nonce);
-
-        var plaintext = Encoding.UTF8.GetBytes(plainText);
-        var ciphertext = new byte[plaintext.Length];
-        var tag = new byte[16];
-
-        using AesGcm aesGcm = new AesGcm(_key);
-        aesGcm.Encrypt(nonce, plaintext, ciphertext, tag);
-
-        return ciphertext;
+        var plainBytes = Encoding.UTF8.GetBytes(plainText);
+    
+        var iv = new byte[12];
+        new Random().NextBytes(iv);
+    
+        var keyBytes = _key;
+    
+        var cipher = new GcmBlockCipher(new AesEngine());
+        var parameters = new AeadParameters(new KeyParameter(keyBytes), 128, iv, Encoding.UTF8.GetBytes("ProtocolVersion1"));
+        cipher.Init(true, parameters);
+    
+        var cipherBytes = new byte[cipher.GetOutputSize(plainBytes.Length)];
+        var len = cipher.ProcessBytes(plainBytes, 0, plainBytes.Length, cipherBytes, 0);
+        cipher.DoFinal(cipherBytes, len);
+    
+        var cipherText = new byte[iv.Length + cipherBytes.Length];
+        Array.Copy(iv, 0, cipherText, 0, iv.Length);
+        Array.Copy(cipherBytes, 0, cipherText, iv.Length, cipherBytes.Length);
+    
+        return cipherText;
     }
     
-    public string Decrypt(byte[] ciphertext)
+    public string Decrypt(byte[] cipherText)
     {
-        var nonce = new byte[12];
-        RandomNumberGenerator.Fill(nonce);
-        
-        var decrypted = new byte[ciphertext.Length];
-        var tag = new byte[16];
-        using var aesGcm = new AesGcm(_key);
-        aesGcm.Decrypt(nonce, ciphertext, tag, decrypted);
-        return Encoding.UTF8.GetString(decrypted);
-    }
+        var iv = cipherText.Take(12).ToArray();
+        var actualCipherText = cipherText.Skip(12).ToArray();
     
-    // public byte[] Encrypt(string plainText)
-    // {
-    //     var plainBytes = Encoding.UTF8.GetBytes(plainText);
-    //
-    //     var iv = new byte[12];
-    //     new Random().NextBytes(iv);
-    //
-    //     var keyBytes = Convert.FromBase64String(_key);
-    //
-    //     var cipher = new GcmBlockCipher(new AesEngine());
-    //     var parameters = new AeadParameters(new KeyParameter(keyBytes), 128, iv, Encoding.UTF8.GetBytes("ProtocolVersion1"));
-    //     cipher.Init(true, parameters);
-    //
-    //     var cipherBytes = new byte[cipher.GetOutputSize(plainBytes.Length)];
-    //     var len = cipher.ProcessBytes(plainBytes, 0, plainBytes.Length, cipherBytes, 0);
-    //     cipher.DoFinal(cipherBytes, len);
-    //
-    //     var cipherText = new byte[iv.Length + cipherBytes.Length];
-    //     Array.Copy(iv, 0, cipherText, 0, iv.Length);
-    //     Array.Copy(cipherBytes, 0, cipherText, iv.Length, cipherBytes.Length);
-    //
-    //     return cipherText;
-    // }
-    //
-    // public string Decrypt(byte[] cipherText)
-    // {
-    //     var iv = cipherText.Take(12).ToArray();
-    //     var actualCipherText = cipherText.Skip(12).ToArray();
-    //
-    //     var keyBytes = Convert.FromBase64String(_key);
-    //
-    //     var cipher = new GcmBlockCipher(new AesEngine());
-    //     
-    //     var parameters = new AeadParameters(new KeyParameter(keyBytes), 128, iv, Encoding.UTF8.GetBytes("ProtocolVersion1"));
-    //     cipher.Init(false, parameters);
-    //
-    //     var plainBytes = new byte[cipher.GetOutputSize(actualCipherText.Length)];
-    //     var len = cipher.ProcessBytes(actualCipherText, 0, actualCipherText.Length, plainBytes, 0);
-    //     cipher.DoFinal(plainBytes, len);
-    //
-    //     return Encoding.UTF8.GetString(plainBytes);
-    // }
+        var keyBytes = _key;
+    
+        var cipher = new GcmBlockCipher(new AesEngine());
+        
+        var parameters = new AeadParameters(new KeyParameter(keyBytes), 128, iv, Encoding.UTF8.GetBytes("ProtocolVersion1"));
+        cipher.Init(false, parameters);
+    
+        var plainBytes = new byte[cipher.GetOutputSize(actualCipherText.Length)];
+        var len = cipher.ProcessBytes(actualCipherText, 0, actualCipherText.Length, plainBytes, 0);
+        cipher.DoFinal(plainBytes, len);
+    
+        return Encoding.UTF8.GetString(plainBytes);
+    }
 }
