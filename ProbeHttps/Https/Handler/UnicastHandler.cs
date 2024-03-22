@@ -109,6 +109,5 @@ public class UnicastHandler
         var encryptedMessage = _encryption.Encrypt(Builder.BuildStatusMessage(service.Id, service.State.ToString().ToUpper()));
         toClient.Write(encryptedMessage);
         toClient.Flush();
-        Console.WriteLine(encryptedMessage.Length);
     }
 }
