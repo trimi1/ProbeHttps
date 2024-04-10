@@ -49,26 +49,34 @@ public class ServiceHandler : IObservable
     private async Task CheckService(Service service)
     {
         var stopwatch = Stopwatch.StartNew();
-        var response = await _client.GetAsync(service.Url);
-        stopwatch.Stop();
+        try
+        {
+            var response = await _client.GetAsync(service.Url);
+            stopwatch.Stop();
 
-        if ((int)response.StatusCode != service.ExpectedStatusCode)
-        {
-            service.State = State.Down;
-            Console.WriteLine(
-                $"Service at {service.Url} is DOWN. Expected HTTP response code {service.ExpectedStatusCode}, but got {(int)response.StatusCode}.");
+            if ((int)response.StatusCode != service.ExpectedStatusCode)
+            {
+                service.State = State.Down;
+                Console.WriteLine(
+                    $"Service at {service.Url} is DOWN. Expected HTTP response code {service.ExpectedStatusCode}, but got {(int)response.StatusCode}.");
+            }
+            else if (stopwatch.ElapsedMilliseconds > service.MaxResponseTime)
+            {
+                service.State = State.Alarm;
+                Console.WriteLine(
+                    $"Service at {service.Url} is in ALARM state. Response time {stopwatch.ElapsedMilliseconds}ms exceeded the maximum allowed {service.MaxResponseTime}ms.");
+            }
+            else
+            {
+                service.State = State.Ok;
+                Console.WriteLine(
+                    $"Service at {service.Url} is OK. HTTP response code: {(int)response.StatusCode}. Response time: {stopwatch.ElapsedMilliseconds}ms.");
+            }
         }
-        else if (stopwatch.ElapsedMilliseconds > service.MaxResponseTime)
+        catch (Exception)
         {
-            service.State = State.Alarm;
-            Console.WriteLine(
-                $"Service at {service.Url} is in ALARM state. Response time {stopwatch.ElapsedMilliseconds}ms exceeded the maximum allowed {service.MaxResponseTime}ms.");
-        }
-        else
-        {
-            service.State = State.Ok;
-            Console.WriteLine(
-                $"Service at {service.Url} is OK. HTTP response code: {(int)response.StatusCode}. Response time: {stopwatch.ElapsedMilliseconds}ms.");
+            service.State = State.Unknown;
+            Console.WriteLine($"Service at {service.Url} is UNKNOWN. The URL might be incorrect or not exist.");
         }
     }
 }

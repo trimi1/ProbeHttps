@@ -62,6 +62,7 @@ public class UnicastHandler
     private void AnalyzeAndRespond(byte[] encryptedMessage, BinaryWriter toClient)
     {
         var message = _encryption.Decrypt(encryptedMessage);
+        Console.WriteLine(message);
         switch (_analyzer.Analyze(message))
         {
             case 0:
@@ -83,6 +84,7 @@ public class UnicastHandler
         var aurls = setupMatch.Groups["Aurls"].Captures.Select(c => c.Value).ToList();
         foreach (var aurl in aurls)
         {
+            Console.WriteLine(aurl);
             var aurlMatch = Regex.Match(aurl, Constants.AugmentedUrlRegex);
             if (!aurlMatch.Success) continue;
 
