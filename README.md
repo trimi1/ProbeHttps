@@ -1,9 +1,12 @@
 # Probe HTTPS
-
+La probe https interroge les services http suivants:
+### Services 
+-http1!https://www.swilabus.com/!0!1500        Réponse HTTP: 200 
+-http2!https://www.swilabus.be/!0!2000         Réponse HTTP: 307
+-http3!https://www.swilabus.com/trkr1!0!1700   Réponse HTTP: 402
+-http4!https://www.swilabus.com/trkr2!0!1800   Réponse HTTP: 505
 ## Prérequis
-
 - C# version utilisée : .NET 6
-
 ## Compilation
 ##Librairies utilisées
 NewtTonSoft.JSON Version 13.0.3
