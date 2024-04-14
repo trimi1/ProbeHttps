@@ -8,7 +8,6 @@ La probe https interroge les services http suivants:
 ## Prérequis
 - C# version utilisée : .NET 6
 - Cloner le projet depuis le dépôt distant : https://github.com/SxYxuse/ProbeHttps.git
-- La grammaire devrait déjà être compilée et ajoutée au projet
 ### Librairies utilisées
 - NewtTonSoft.JSON Version 13.0.3
 - BouncyCastle.NetCore Version 2.2.1
