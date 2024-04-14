@@ -16,6 +16,8 @@ if (config == null)
     return;
 }
 
+Console.WriteLine("Probe started");
+
 var serviceHandler = new ServiceHandler();
 serviceHandler.StartMonitoring();
 
